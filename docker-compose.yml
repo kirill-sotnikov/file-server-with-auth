@@ -1,0 +1,13 @@
+version: "3"
+services:
+  app:
+    image: node:19-alpine
+    container_name: node19
+    environment:
+      - PORT=10109
+      - NAME=root
+      - PASSWORD=root123
+    volumes:
+      - ./:/app/
+    working_dir: /app/
+    command: /bin/sh "./entrypoint.sh"
