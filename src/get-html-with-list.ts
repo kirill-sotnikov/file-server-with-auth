@@ -18,7 +18,8 @@ export const getHtmlWithFileList = (root: string, files: Array<string>) => {
   return files
     .map((item) => {
       const isDir = !item.match(/\..*$/i);
-      const link = (root === "./" ? "" : root + "/") + item;
+      const link = root + "/" + item;
+
       return `<a style="${toHTMLStyle(style)}" href="${removeDuplicateInURL(
         link
       )}">${isDir ? `${item}/` : item}</a>`;

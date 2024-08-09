@@ -9,6 +9,8 @@ import { validate } from "./validate";
 
 const PORT = Number(process.env.PORT) || 3000;
 
+export const PUBLIC_FOLDER = "./public";
+
 const app = fastify();
 const authenticate = { realm: "Westeros" };
 
@@ -17,13 +19,16 @@ app.register(basicAuth, { validate, authenticate });
 app.after(() => {
   app.addHook("onRequest", app.basicAuth);
 
-  app.get("/*", async (request, response) => {
-    const filePath = request.url === "/" ? "./" : request.url.slice(1);
+  app.get("/public/*", async (request, reply) => {
+    const filePath =
+      request.url === "/public/" ? PUBLIC_FOLDER : request.url.slice(1);
+
+    console.log({ filePath });
 
     const fileContent = await readFile(filePath);
 
     if (fileContent.isSuccess) {
-      response
+      reply
         .type(getContentType(filePath))
         .send(addHighlight(filePath, fileContent.data.toString()));
 
@@ -34,7 +39,7 @@ app.after(() => {
       const filesInDirResult = await getFileListInDir(filePath);
 
       if (filesInDirResult.isSuccess) {
-        response
+        reply
           .type("text/html")
           .send(getHtmlWithFileList(filePath, filesInDirResult.data));
 
@@ -46,7 +51,11 @@ app.after(() => {
 
     console.error(fileContent.error);
 
-    response.send("File not found");
+    reply.send("File not found");
+  });
+
+  app.get(`/*`, async (request, reply) => {
+    reply.redirect("/public/");
   });
 });
 
