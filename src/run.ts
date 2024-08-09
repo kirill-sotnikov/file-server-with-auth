@@ -13,7 +13,7 @@ const authenticate = { realm: "Westeros" };
 app.register(basicAuth, { validate, authenticate });
 
 app.register(fastifyStatic, {
-  root: path.join(__dirname.replace("/src", ""), ""),
+  root: path.join(__dirname.replace("/src", ""), "public"),
   prefix: "/public/", // optional: default '/',
   decorateReply: true,
   list: {
