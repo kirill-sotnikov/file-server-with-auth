@@ -10,10 +10,12 @@ const PORT = Number(process.env.PORT) || 3000;
 const app = fastify();
 const authenticate = { realm: "Westeros" };
 
+const dirPath = __dirname.replace("/src", "").replace("/dist", "");
+
 app.register(basicAuth, { validate, authenticate });
 
 app.register(fastifyStatic, {
-  root: path.join(__dirname.replace("/src", ""), "public"),
+  root: path.join(dirPath, "public"),
   prefix: "/public/", // optional: default '/',
   decorateReply: true,
   list: {
